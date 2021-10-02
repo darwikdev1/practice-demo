@@ -1,0 +1,36 @@
+--- 
+- name: 
+  hosts: dc 
+  vars: 
+    password: redhat
+  tasks: 
+  - name: creating sysadm
+    group: 
+      name: sysadm 
+      state: present
+  - name:  creating user harry who belongs to group sysadm as a secondary group. 
+    user: 
+      name: harry 
+      groups: sysadm
+      password: "{{ password | password_hash('sha512') }}"
+      update_password: always 
+      state: present 
+  - name:  creating user natasha who belongs to group sysadm as a secondary group. 
+    user: 
+      name: natasha
+      groups: sysadm
+      password: "{{ password | password_hash('sha512') }}"
+      update_password: always 
+      state: present 
+  - name:  creating user sarah who does not have an interactive login shell. 
+    user: 
+      name: sarah
+      shell: /sbin/nologin 
+      password: "{{ password | password_hash('sha512') }}"
+      update_password: always 
+      state: present 
+  - copy: 
+      src: /root/out.txt 
+      dest: /root/file
+    when: file not exist 
+

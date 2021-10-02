@@ -1,0 +1,11 @@
+---
+- name: User Module Deployment 
+  hosts: datacenter 
+  tasks: 
+  - name: Deleting "{{item}}" 
+    group:
+      name: "{{ item }}"
+      state: absent
+    loop:
+      - sysadm 
+

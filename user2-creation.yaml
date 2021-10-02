@@ -1,0 +1,15 @@
+---
+- name: user-deploy 
+  hosts: dc
+  tasks: 
+  - name: creating group cloud-init 
+    group: 
+      name: cloud-init 
+      state: present 
+
+  - name: creating user saurabh 
+    user: 
+      name: saurabh 
+      groups: cloud-init
+      password: 9K35vZAsLrVSU
+      state: present 

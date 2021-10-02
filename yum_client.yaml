@@ -1,0 +1,26 @@
+--- 
+- name: 
+  hosts: s12
+  tasks: 
+  - lineinfile: 
+      path: /etc/hosts 
+      line: | 
+        192.168.1.64  system11.blackmagiclinux.com 
+        192.168.1.71  system12.blackmagiclinux.com         
+      create: yes 
+  - name: 
+    yum_repository: 
+      name: "AppStream"
+      file: yum.repo
+      description: "AppStream yum repository server"
+      baseurl: http://system11.blackmagiclinux.com/content/AppStream
+      gpgcheck: false
+
+  - name: 
+    yum_repository: 
+      name: "BaseOS"
+      file: yum.repo
+      description: "BaseOS yum repository server"
+      baseurl: http://system11.blackmagiclinux.com/content/BaseOS
+      gpgcheck: false 
+    

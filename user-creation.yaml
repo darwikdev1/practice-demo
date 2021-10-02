@@ -1,0 +1,33 @@
+---
+- name: User Module Deployment 
+  hosts: datacenter 
+  vars: 
+    user_pass: redhat
+  tasks: 
+  - name: Creating user Saurabh 
+    user: 
+      name: saurabh 
+      password: "{{ user_pass | password_hash('sha512') }}"
+      update_password: on_create 
+      state: present 
+  - name: Creating user Sam 
+    user: 
+      name: sam 
+      generate_ssh_key: yes
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa
+      uid: 2021 
+      groups: sudo 
+      home: /sam 
+      comment: "Sam User"
+      password: "{{ user_pass | password_hash('sha512') }}"
+      update_password: on_create 
+      state: present 
+  - name: Set authorized key for user sam copying it from current user
+    authorized_key:
+      user: saurabh 
+      state: present
+      key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+    tags: 
+      - key-pair-saurabh 
+

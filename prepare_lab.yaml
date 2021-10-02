@@ -1,0 +1,11 @@
+---
+- name: Prepare lab setup for client -> cloud.blackmagiclinux.com 
+  hosts: client
+  vars: 
+    msg: "cloud   ALL=(ALL) NOPASSWD: ALL"
+  tasks:
+  - name: Gaining sudo privilege to cloud user 
+    copy: 
+      content: "{{msg}}"
+      dest: /etc/sudoers.d/cloud 
+  - name: 

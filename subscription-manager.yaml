@@ -1,0 +1,19 @@
+---
+- name: Adding Subscription-Manager 
+  hosts: s10 
+  vars_prompt: 
+    - name: user 
+      prompt: "username " 
+      private: no 
+    - name: password 
+      prompt: "password " 
+      private: yes 
+    
+  tasks: 
+  - name:
+    redhat_subscription: 
+      state: present
+      username: "{{user}}"
+      password: "{{password}}"
+      auto_attach: true
+

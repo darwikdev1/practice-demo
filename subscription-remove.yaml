@@ -1,0 +1,8 @@
+---
+- name: Adding Subscription-Manager 
+  hosts: s10 
+  tasks: 
+  - name:
+    redhat_subscription: 
+      state: absent
+

@@ -1,0 +1,98 @@
+---
+- name: 
+  hosts: s11
+  ignore_errors: yes 
+  tasks:
+  - name: Mounting dvd rom on /mnt directory 
+    mount: 
+      src: /dev/cdrom 
+      path: /mnt 
+      fstype: iso9660
+      state: mounted
+  - name: Creating Repository 
+    lineinfile: 
+      path: /etc/yum.repos.d/abc.repo 
+      line: |
+        [AppStream]
+        enabled=1
+        gpgcheck=0
+        baseurl=file:///mnt/AppStream
+        name=AppStream Repository 
+        [BaseOS]
+        name=BaseOS Repository
+        baseurl=file:///mnt/BaseOS
+        gpgcheck=0
+        enabled=1
+      create: yes 
+  - name: checking the file
+    stat:
+      path: /etc/yum.repos.d/abc.repo
+    register: p
+  - debug:
+      msg: "etc/yum.repos.d/abc.repo is exist"
+    when: p.stat.exists
+  - name: Installing apache packages 
+    yum: 
+      name: httpd 
+      state: present 
+  - name: creating directory /var/www/html/content 
+    file: 
+      dest: /var/www/html/content 
+      mode: 0775 
+      state: directory 
+
+  - name: unmounting dvd rom on /mnt directory
+    mount:
+      src: /dev/cdrom 
+      path: /mnt
+      state: unmounted 
+  - name: mounting dvd on /var/www/html/content 
+    mount: 
+      src: /dev/cdrom 
+      path: /var/www/html/content
+      fstype: iso9660
+      state: mounted
+  - name: Creating Repository
+    lineinfile:
+      path: /etc/yum.repos.d/abc.repo
+      line: |
+        [AppStream]
+        enabled=1
+        gpgcheck=0
+        baseurl=file:///var/www/html/content/AppStream
+        name=AppStream Repository
+        [BaseOS]
+        name=BaseOS Repository   
+        baseurl=file:///var/www/html/content/BaseOS
+        gpgcheck=0  
+        enabled=1   
+
+
+  - name: start and enable httpd service 
+    service: 
+      name: httpd
+      state: started
+      enabled: true
+
+  - name: stop and disable firewalld service 
+    service: 
+      name: firewalld
+      state: stopped 
+      enabled: false 
+
+  - name: changing selinux policy to permissive 
+    selinux: 
+      policy: targeted
+      state: permissive 
+  - name: checking yum_repository is working 
+    command: yum repolist 
+
+  - name: adding hosts entry 
+    lineinfile: 
+      path: /etc/hosts 
+      line: | 
+        192.168.1.67  system10.blackmagiclinux.com 
+        192.168.1.64  system11.blackmagiclinux.com
+  - name: all checked passed 
+    debug: 
+      msg: "all ok"

@@ -1,0 +1,30 @@
+
+
+subscription-manager 
+
+cdrom 
+
+
+remote 
+
+	system10 
+cdrom /mnt 
+yum_config 
+ install httpd*
+directory /var/www/html/content 
+umount /mnt 
+mount /var/www/html/content 
+yum_config 
+ baseurl = file:///var/www/html/content 
+service start | enable 
+firewalld stop | disable
+selinux permissive 
+yum_repolist 
+
+hosts /etc/hosts 
+
+
+	system11
+yum_config 
+yum_repolist 
+

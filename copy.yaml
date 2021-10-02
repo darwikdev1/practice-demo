@@ -1,0 +1,15 @@
+--- 
+- name: 
+  hosts: datacenter 
+  tasks: 
+  - name: Ansible check file exists.
+    stat:
+      path: /root/test
+    register: p
+  - debug:
+      msg: "/etc/passwd is exist"
+    when: p.stat.exists
+  - copy: 
+      src: /etc/passwd
+      dest: /root/test
+    when: p.stat.exists == False
